@@ -46,17 +46,17 @@ class Dvm
 
   def send_job_result_event
     job_result_tags = [
-      ["request", "<job-request>"],
-      ["e", "<job-request-id>", "<relay-hint>"],
-      ["i", "<input-data>"],
-      ["p", "<customer's-pubkey>"],
+      ["request", "id"],
+      ["e", "e"],
+      ["i", "i"],
+      ["p", "p"],
     ]
 
     job_result_event = Nostr::Event.new(
       pubkey: npub_dvm,
       kind: 6001,
-      tags: job_result_tags,
-      content: "RESULT PAYLOAD: #{@parsed_search_results}"
+      # tags: job_result_tags, FIX
+      content: "RESULT PAYLOAD: #{@parsed_search_results.join(', ')}"
     )
 
     job_result_event.sign(keypair.private_key)
@@ -81,5 +81,5 @@ end
 dvm = Dvm.new
 binding.pry
 dvm.send_payment_required_event
-dmv.perform_job
+dvm.perform_job
 dvm.send_job_result_event
