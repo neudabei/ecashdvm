@@ -38,11 +38,22 @@ class Customer
     client.publish(job_request_event)
   end
 
+  def get_ecash_token
+    npub_dvm = ENV['NPUB_DVM']
+    amount_in_sats = 1
+
+    HTTParty.post("http://localhost:4448/send?amount=#{amount_in_sats}&nostr=#{npub_dvm}&offline=false",
+                  {
+                    :body => {}.to_json,
+                    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+                  })
+  end
+
   def send_job_payment_event
     ecash_token = ENV["ECASH_TOKEN"] # set only to npub of dvm
 
     job_payment_tags = [
-      ["takedeeznuts", "ecash_token"],
+      ["takedeeznuts", ENV["ECASH_TOKEN"]],
       ["amount", "1", "ecash"]
     ]
 
@@ -57,6 +68,7 @@ class Customer
 
     client.publish(job_payment_event)
   end
+
 
   private
 
